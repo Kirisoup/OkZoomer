@@ -27,8 +27,6 @@ public class ManageZoomEvent implements ClientTickEvents.Start {
 
 		noSpyGlass = !client.player.getInventory().contains(ZoomUtils.ZOOM_DEPENDENCIES_TAG);
 
-		double zoomDivisor = OkZoomerConfigManager.CONFIG.zoomValues.zoomDivisor.value();
-
 		if (noSpyGlass && ZoomUtils.zoomStep > 0) switch (OkZoomerConfigManager.CONFIG.features.spyglassMode.value()) {
 			case OFF, REPLACE_ZOOM -> ZoomUtils.ZOOMER_ZOOM.resetZoomDivisor();
 		}
