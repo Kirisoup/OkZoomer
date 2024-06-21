@@ -58,7 +58,9 @@ public class ZoomUtils {
 			maximumZoomDivisor = Math.min(maximumZoomDivisor, ZoomPackets.getMaximumZoomDivisor());
 		}
 
-		zoomStep = increase ? Math.min(zoomStep + 1, upperScrollStep) :  Math.max(zoomStep - 1, -lowerScrollStep);
+		if (ManageZoomEvent.noSpyGlass && increase && Math.min(zoomStep + 1, upperScrollStep) > 0) return;
+
+		zoomStep = increase ? Math.min(zoomStep + 1, upperScrollStep) : Math.max(zoomStep - 1, -lowerScrollStep);
 
 		if (zoomStep > 0) {
 			ZOOMER_ZOOM.setZoomDivisor(zoomDivisor + ((maximumZoomDivisor - zoomDivisor) / upperScrollStep * zoomStep));

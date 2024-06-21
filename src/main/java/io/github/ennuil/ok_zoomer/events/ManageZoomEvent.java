@@ -18,17 +18,27 @@ public class ManageZoomEvent implements ClientTickEvents.Start {
 	// Used internally in order to make persistent zoom less buggy
 	private static boolean persistentZoom = false;
 
+	public static boolean noSpyGlass = false;
+
 	@Override
 	public void startClientTick(MinecraftClient client) {
 		// We need the player for spyglass shenanigans
 		if (client.player == null) return;
+
+		noSpyGlass = !client.player.getInventory().contains(ZoomUtils.ZOOM_DEPENDENCIES_TAG);
+
+		double zoomDivisor = OkZoomerConfigManager.CONFIG.zoomValues.zoomDivisor.value();
+
+		if (noSpyGlass && ZoomUtils.zoomStep > 0) switch (OkZoomerConfigManager.CONFIG.features.spyglassMode.value()) {
+			case OFF, REPLACE_ZOOM -> ZoomUtils.ZOOMER_ZOOM.resetZoomDivisor();
+		}
 
 		// If zoom is disabled, do not allow for zooming at all
 		boolean disableZoom = ZoomPackets.shouldDisableZoom() ||
 			(switch (OkZoomerConfigManager.CONFIG.features.spyglassMode.value()) {
 				case REQUIRE_ITEM, BOTH -> true;
 				default -> false;
-			} && !client.player.getInventory().contains(ZoomUtils.ZOOM_DEPENDENCIES_TAG));
+			} && noSpyGlass);
 
 		if (disableZoom) {
 			ZoomUtils.ZOOMER_ZOOM.setZoom(false);
